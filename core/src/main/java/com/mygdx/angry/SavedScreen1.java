@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import java.util.ArrayList;
 
 public class SavedScreen1 implements Screen {
+    private World world;
     private final GameStateManager gsm;  // Manage screen transitions
     private final SpriteBatch batch;
     private final Bird bird;
@@ -30,57 +33,61 @@ public class SavedScreen1 implements Screen {
     private final ImageButton  pauseButton;
     private boolean isPopupActive = false;private Image popupBackground;
     private ImageButton resumePopupButton, levelsPopupButton;
+    private PhysicsBodyDestructor bodyDestructor;
 
 
     // Constructor to initialize the screen with GameStateManager
     public SavedScreen1(GameStateManager gsm) {
+
         this.gsm = gsm;
         this.batch = new SpriteBatch();
+        world = new World(new Vector2(0, -9.8f), true);
+        this.bodyDestructor = new PhysicsBodyDestructor(world);
 
         // Initialize birds with different sizes and types
         birdQueue = new ArrayList<>();
 
-        birdQueue.add(new Bird(30, 200, 60, 60, Bird.BirdType.YELLOW));
-        birdQueue.add(new Bird(125, 236, 20, 20, Bird.BirdType.RED));
-        birdQueue.add(new Bird(5, 200, 40, 40, Bird.BirdType.BLUE));
+        birdQueue.add(new Bird(30, 200, 60, 60, Bird.BirdType.YELLOW,world));
+        birdQueue.add(new Bird(125, 236, 20, 20, Bird.BirdType.RED,world));
+        birdQueue.add(new Bird(5, 200, 40, 40, Bird.BirdType.BLUE,world));
 //        birdQueue.add(new Bird(125, 236, 20, 20, Bird.BirdType.BLUE));
 
         // Set up the first bird in the catapult
         bird = birdQueue.removeFirst();  // Launch the first bird
 
         pigs = new ArrayList<>();
-        pigs.add(new Pig(422, 247, 17, 17));  // Small pig
-        pigs.add(new Pig(455, 200, 30, 30));  // Medium pig
+        pigs.add(new Pig(world,422, 247, 17, 17,50, bodyDestructor));  // Small pig
+        pigs.add(new Pig(world,455, 200, 30, 30,100, bodyDestructor));  // Medium pig
 //        pigs.add(new Pig(405, 282, 50, 50));  // Large pig
 
 
         // Initialize blocks with different materials
         blocks = new ArrayList<>();
 
-        blocks.add(new Block(385, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(425, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(500, 225, 50, 20, Block.BlockType.HORI));
-        blocks.add(new Block(400, 200, 30, 30, Block.BlockType.WOODEN));  // Wooden block base
+        blocks.add(new Block(world,385, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,425, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,500, 225, 50, 20, Block.BlockType.HORI,50, bodyDestructor));
+        blocks.add(new Block(world,400, 200, 30, 30, Block.BlockType.WOODEN,50, bodyDestructor));  // Wooden block base
 
 
-        blocks.add(new Block(495, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(535, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(390, 225, 50, 20, Block.BlockType.HORI));
-        blocks.add(new Block(510, 200, 30, 30, Block.BlockType.WOODEN));   // Wooden block top
+        blocks.add(new Block(world,495, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,535, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,390, 225, 50, 20, Block.BlockType.HORI,50, bodyDestructor));
+        blocks.add(new Block(world,510, 200, 30, 30, Block.BlockType.WOODEN,50, bodyDestructor));   // Wooden block top
 
 
-        blocks.add(new Block(440, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(480, 190, 20, 50, Block.BlockType.VERT));
-        blocks.add(new Block(445, 225, 50, 20, Block.BlockType.HORI));
+        blocks.add(new Block(world,440, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,480, 190, 20, 50, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,445, 225, 50, 20, Block.BlockType.HORI,50, bodyDestructor));
         // Steel block
 
-        blocks.add(new Block(410, 235, 40, 40, Block.BlockType.ICE));      // Ice block
-        blocks.add(new Block(450, 235, 40, 40, Block.BlockType.ICETRI));      // Ice block
-        blocks.add(new Block(490, 235, 40, 40, Block.BlockType.STEEL));
+        blocks.add(new Block(world,410, 235, 40, 40, Block.BlockType.ICE,50, bodyDestructor));      // Ice block
+        blocks.add(new Block(world,450, 235, 40, 40, Block.BlockType.ICETRI,50, bodyDestructor));      // Ice block
+        blocks.add(new Block(world,490, 235, 40, 40, Block.BlockType.STEEL,50, bodyDestructor));
 
-        blocks.add(new Block(385, 270, 180, 20, Block.BlockType.HORI));
+        blocks.add(new Block(world,385, 270, 180, 20, Block.BlockType.HORI,50, bodyDestructor));
 //        blocks.add(new Block(455, 282, 20, 60, Block.BlockType.LONG));
-        blocks.add(new Block(475, 282, 50, 20, Block.BlockType.LONG));
+        blocks.add(new Block(world,475, 282, 50, 20, Block.BlockType.LONG,50, bodyDestructor));
 
         // Load background and catapult textures
         backgroundTexture = new Texture("background.png");

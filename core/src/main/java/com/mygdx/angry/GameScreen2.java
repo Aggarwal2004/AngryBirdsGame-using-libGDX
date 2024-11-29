@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 
-public class GameScreen implements Screen , Serializable{
+public class GameScreen2 implements Screen , Serializable{
     private transient World world;
     private transient Bird currentBird;
     private transient GameStateManager gsm;
@@ -58,10 +58,15 @@ public class GameScreen implements Screen , Serializable{
     private static final float SLING_X = 100f; // X position of slingshot
     private static final float SLING_Y = 200f; // Y position of slingshot
     private static final float MAX_STRETCH_DISTANCE = 60.0f;  // Maximum stretch in pixels
+    private Vector2 birdPosition;
+    private Vector2 birdVelocity;
     private static final float DRAG_AREA_X = 0f; // X position of the confined area
     private static final float DRAG_AREA_Y = 150f; // Y position of the confined area
     private static final float DRAG_AREA_WIDTH = 200f; // Width of the confined area
     private static final float DRAG_AREA_HEIGHT = 200f;
+
+
+    // Additional fields for stretch mechanics
     private float currentStretchDistance;
     private Vector2 frontBandPos;
     private Vector2 backBandPos;
@@ -73,23 +78,36 @@ public class GameScreen implements Screen , Serializable{
     private static final int BLOCK_DESTROY_SCORE = 250;
     private static final int SCORE_THRESHOLD = 500;
     private float screenShakeTime = 0;
+
     private float screenShakeIntensity = 0;
+
     private static final float SHAKE_DURATION = 0.5f;
+
     private static final float SHAKE_INTENSITY = 5.0f;
     private int currentLevel;
+
     private transient Texture backgroundTexture;
+    private transient Texture pauseTexture;
+    private transient Texture menuTexture;
+
+
+
+    // Popup elements
     private transient Image popupBackground;
     private transient ImageButton resumePopupButton, levelsPopupButton;
     private static boolean show=true;
-    public GameScreen(GameStateManager gsm) {
+
+    public GameScreen2(GameStateManager gsm) {
+
         this.gsm = gsm;
+
         this.camera = new OrthographicCamera(800, 480);
 
         camera.setToOrtho(false);
 
         camera.zoom = 0.7f;  // Zoom out (increase number to zoom out more)
 
-        camera.position.set(540, 330, 0);  // Shifted more to left
+        camera.position.set(540, 340, 0);  // Shifted more to left
 
 
         camera.update();
@@ -97,7 +115,6 @@ public class GameScreen implements Screen , Serializable{
         launchedBirds = new ArrayList<>();
         this.viewport = new FitViewport(1000, 600);
         world = new World(new Vector2(0, -9.8f), true);
-
         this.bodyDestructor = new PhysicsBodyDestructor(world);
         scoreFont = new BitmapFont();
         scoreFont.setColor(Color.WHITE);
@@ -224,9 +241,12 @@ public class GameScreen implements Screen , Serializable{
         birdQueue.clear();
         birdQueue.add(blueBird);
         birdQueue.add(yellowBird);
-        birdQueue.add(blackBird);
+        birdQueue.add(redBird);
+        birdQueue.add(blueBird);
         birdQueue.add(redBird);
         birdQueue.add(yellowBird);
+        birdQueue.add(redBird);
+
 
         catapult = new Catapult(100, 175, 120, 100);// Red bird last
 
@@ -240,18 +260,19 @@ public class GameScreen implements Screen , Serializable{
             currentBird.getBody().setType(BodyDef.BodyType.StaticBody);
             catapult.setBird(currentBird);
         }
-
         pigs = new ArrayList<>();
-        pigs.add(new Pig(world, 605, 180, 50, 50, 150, bodyDestructor));
+        pigs.add(new Pig(world, 605, 180, 50, 50, 150, bodyDestructor));  // Large pig
+        pigs.add(new Pig(world, 680, 180, 30, 30, 150, bodyDestructor));
+
 
         // Initialize blocks with different materials
         blocks = new ArrayList<>();
 
-        blocks.add(new Block(world,585, 178, 20, 100, Block.BlockType.VERT,50, bodyDestructor));
-        blocks.add(new Block(world,650, 178, 20, 100, Block.BlockType.VERT,50, bodyDestructor));
-
-
-
+        blocks.add(new Block(world,585, 180, 20, 100, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,650, 180, 20, 100, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,715, 180, 20, 100, Block.BlockType.VERT,50, bodyDestructor));
+        blocks.add(new Block(world,660, 210, 70, 15, Block.BlockType.HORI,50, bodyDestructor));
+        blocks.add(new Block(world,675, 220, 40, 40, Block.BlockType.WOODEN,50, bodyDestructor));
         // Load background and catapult textures
         backgroundTexture = new Texture("background.png");
         Image backgroundImage = new Image(new TextureRegionDrawable(backgroundTexture));
@@ -288,7 +309,7 @@ public class GameScreen implements Screen , Serializable{
                 showTablePopup();  // Show Win/Lose/Restart table
             }
         });
-        slingOrigin = new Vector2(153, 235); // Set the slingshot origin
+        slingOrigin = new Vector2(150, 260); // Set the slingshot origin
         releaseVelocity = new Vector2();
         Gdx.input.setInputProcessor(stage);
 
@@ -371,7 +392,7 @@ public class GameScreen implements Screen , Serializable{
         levelsPopupButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                saveState("save.ser");
+                saveState("save2.ser");
                 hidePopup();
                 gsm.setScreen("levvels");
             }
@@ -638,7 +659,7 @@ public class GameScreen implements Screen , Serializable{
                 0
             );
         } else {
-            camera.zoom = 0.7f;  // Maintain zoom level
+            camera.zoom =0.7f;  // Maintain zoom level
             camera.position.set(540, 340, 0);  // Maintain left shift
         }
         camera.update();
@@ -658,7 +679,6 @@ public class GameScreen implements Screen , Serializable{
 
         // Render catapult first
         catapult.render(batch);
-
 
         // Render launched birds
         for (Bird bird : launchedBirds) {
@@ -757,7 +777,7 @@ public class GameScreen implements Screen , Serializable{
 
         camera.zoom = 0.7f;  // Maintain zoom level
 
-        camera.position.set(540, 330, 0);  // Maintain left shift
+        camera.position.set(540, 340, 0);  // Maintain left shift
 
         camera.update();
 
@@ -834,11 +854,11 @@ public class GameScreen implements Screen , Serializable{
         }
     }
 
-    public static GameScreen loadState(String filePath, GameStateManager gsm) {
+    public static GameScreen2 loadState(String filePath, GameStateManager gsm) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
             GameState state = (GameState) ois.readObject();
 
-            GameScreen gameScreen = new GameScreen(gsm);
+            GameScreen2 gameScreen = new GameScreen2(gsm);
             gameScreen.currentLevel = state.currentLevel;
             gameScreen.score = state.score;
 
@@ -877,7 +897,6 @@ public class GameScreen implements Screen , Serializable{
         }
     }
 
-
     @Override
     public void hide() {}
 
@@ -894,6 +913,6 @@ public class GameScreen implements Screen , Serializable{
         }
         stage.dispose();
         skin.dispose();
-
     }
 }
+

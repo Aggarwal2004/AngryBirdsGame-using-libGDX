@@ -57,7 +57,7 @@ public class StartScreen extends AbstractGameScreen {
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                gsm.setScreen("levels");
+                gsm.setScreen("levvels");
             }
         });
 
@@ -70,6 +70,7 @@ public class StartScreen extends AbstractGameScreen {
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+
                 gsm.setScreen("saved");
             }
         });

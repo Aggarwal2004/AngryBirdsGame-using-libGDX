@@ -16,7 +16,7 @@ public class SavedGamesScreen extends AbstractGameScreen {
     private final SpriteBatch batch;
     private final Viewport viewport;
     private ImageButton backButton;
-    private ImageButton savedSlotButton;
+    private ImageButton savedSlotButton,savedSlotButton2,savedSlotButton3;
 
     public SavedGamesScreen(GameStateManager gsm) {
         super(gsm);
@@ -39,22 +39,66 @@ public class SavedGamesScreen extends AbstractGameScreen {
         Gdx.input.setInputProcessor(stage);
 
         // Create the ImageButton for the saved game slot
-        Texture savedSlotTexture = new Texture("saved1.png");  // Ensure the image exists in assets
+        Texture savedSlotTexture = new Texture("level1.png");  // Ensure the image exists in assets
         TextureRegionDrawable savedSlotDrawable = new TextureRegionDrawable(new TextureRegion(savedSlotTexture));
         savedSlotButton = new ImageButton(savedSlotDrawable);
 
         // Set size and position of the saved slot button
-        savedSlotButton.setSize(200, 100);  // Adjust size as needed
-        savedSlotButton.setPosition(40, 450);  // Adjust position
+        savedSlotButton.setSize(450, 350);  // Adjust size as needed
+        savedSlotButton.setPosition(20, 150);
+
+
+        Texture savedSlotTexture2 = new Texture("level2.png");  // Ensure the image exists in assets
+        TextureRegionDrawable savedSlotDrawable2 = new TextureRegionDrawable(new TextureRegion(savedSlotTexture2));
+        savedSlotButton2 = new ImageButton(savedSlotDrawable2);
+
+        // Set size and position of the saved slot button
+        savedSlotButton2.setSize(450, 350);  // Adjust size as needed
+        savedSlotButton2.setPosition(280, 150);// Adjust position
+//
+        Texture savedSlotTexture3 = new Texture("level3.png");  // Ensure the image exists in assets
+        TextureRegionDrawable savedSlotDrawable3 = new TextureRegionDrawable(new TextureRegion(savedSlotTexture3));
+        savedSlotButton3 = new ImageButton(savedSlotDrawable3);
+
+        // Set size and position of the saved slot button
+        savedSlotButton3.setSize(450, 350);  // Adjust size as needed
+        savedSlotButton3.setPosition(520, 150);// Adjust position
+
 
         stage.addActor(savedSlotButton);
+        stage.addActor(savedSlotButton2);
+        stage.addActor(savedSlotButton3);
 
         // Add click listener to the saved slot button
         savedSlotButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 System.out.println("Loading saved game...");
-                gsm.setScreen("savedgame");  // Switch to saved game screen
+                GameScreen loadState=GameScreen.loadState("save.ser",gsm);
+                if(loadState!=null) {
+                    gsm.setScreen(loadState);
+                }  // Switch to saved game screen
+            }
+        });
+        savedSlotButton2.addListener(new ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                System.out.println("Loading saved game...");
+                GameScreen2 loadState=GameScreen2.loadState("save2.ser",gsm);
+                if(loadState!=null) {
+                    gsm.setScreen(loadState);
+                }  // Switch to saved game screen
+            }
+        });
+
+        savedSlotButton3.addListener(new ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                System.out.println("Loading saved game...");
+                GameScreen3 loadState=GameScreen3.loadState("save3.ser",gsm);
+                if(loadState!=null) {
+                    gsm.setScreen(loadState);
+                }  // Switch to saved game screen
             }
         });
 

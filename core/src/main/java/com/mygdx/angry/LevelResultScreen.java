@@ -1,5 +1,4 @@
 package com.mygdx.angry;
-
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 

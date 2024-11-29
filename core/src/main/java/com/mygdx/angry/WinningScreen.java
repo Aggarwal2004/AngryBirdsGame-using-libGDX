@@ -17,7 +17,7 @@ public class WinningScreen implements Screen {
     private final Stage stage;
     private final Texture winBackgroundTexture;
     private ImageButton restartButton, levelsButton;
-    private Image resultImage;
+    private int currentLevel;
 
     public WinningScreen(GameStateManager gsm) {
         this.gsm = gsm;
@@ -31,53 +31,53 @@ public class WinningScreen implements Screen {
 
         // Add the background image first (so buttons appear on top)
         stage.addActor(backgroundImage);
-        setupResultImage();
+        currentLevel = gsm.getCurrentLevel();
 
         setupUI();
         Gdx.input.setInputProcessor(stage);  // Ensure input is handled by the stage
-    }
-
-    private void setupResultImage() {
-        // Load the result image (e.g., "you_lost.png")
-        Texture resultTexture = new Texture("result.png");
-        resultImage = new Image(new TextureRegionDrawable(resultTexture));
-
-        // Set size and position for the result image
-        resultImage.setSize(350, 300);  // Adjust size if needed
-        resultImage.setPosition(120,100 );
-
-        // Add the result image to the stage
-        stage.addActor(resultImage);
     }
 
     private void setupUI() {
         // Restart button
         Texture restartTexture = new Texture("restart_button.png");
         restartButton = new ImageButton(new TextureRegionDrawable(restartTexture));
-        restartButton.setSize(100, 55);  // Adjust size if needed
-        restartButton.setPosition(130,110);  // Adjust as necessary
+        restartButton.setSize(150, 85);  // Adjust size if needed
+        restartButton.setPosition(850,250);  // Adjust as necessary
         stage.addActor(restartButton);
 
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 System.out.println("Restart button clicked!");
-                gsm.setScreen("game");  // Restart the game
+                gsm.setScreen("level" + currentLevel);  // Restart the game
             }
         });
 
         // Levels button
         Texture levelsTexture = new Texture("back.png");
         levelsButton = new ImageButton(new TextureRegionDrawable(levelsTexture));
-        levelsButton.setSize(150, 75);  // Adjust size if needed
-        levelsButton.setPosition(180, 100);  // Adjust as necessary
+        levelsButton.setSize(210, 105);  // Adjust size if needed
+        levelsButton.setPosition(400, 240);  // Adjust as necessary
         stage.addActor(levelsButton);
 
         levelsButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 System.out.println("Levels button clicked!");
-                gsm.setScreen("levels");  // Return to levels screen
+                gsm.setScreen("levvels");  // Return to levels screen
+            }
+        });
+        Texture nextLevelTexture = new Texture("next_level_button.png");
+        ImageButton nextLevelButton = new ImageButton(new TextureRegionDrawable(nextLevelTexture));
+        nextLevelButton.setSize(170, 105);  // Adjust size if needed
+        nextLevelButton.setPosition(1320, 730);  // Position at the top of the screen
+        stage.addActor(nextLevelButton);
+
+        nextLevelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                System.out.println("Next level button clicked!");
+                gsm.setScreen("level" + (currentLevel + 1));  // Go to the next level
             }
         });
     }
@@ -121,3 +121,5 @@ public class WinningScreen implements Screen {
         stage.dispose();
     }
 }
+
+//the thing is that when I click on the restart button of the winning sxcren after winning level 2 then it directs to level 1 instead of level 2.fix this without adding any more arguments to the required functions

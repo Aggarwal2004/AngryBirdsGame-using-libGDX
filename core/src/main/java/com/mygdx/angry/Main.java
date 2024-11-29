@@ -12,8 +12,10 @@ public class Main extends Game {
 
         // Register all screens
         gsm.addScreen("start", new StartScreen(gsm));
-        gsm.addScreen("levels", new LevelsScreen(gsm)); // Ensure LevelsScreen is registered
-        gsm.addScreen("game", new GameScreen(gsm));     // Ensure GameScreen is registered
+        gsm.addScreen("levvels", new LevelsScreen(gsm)); // Ensure LevelsScreen is registered
+        gsm.addScreen("level1", new GameScreen(gsm));     // Ensure GameScreen is registered
+        gsm.addScreen("level2", new GameScreen2(gsm));
+        gsm.addScreen("level3", new GameScreen3(gsm));
         gsm.addScreen("pause", new PauseScreen(gsm));
         gsm.addScreen("result", new LevelResultScreen(gsm));
         gsm.addScreen("saved", new SavedGamesScreen(gsm));
@@ -33,6 +35,6 @@ public class Main extends Game {
 
     @Override
     public void dispose() {
-        gsm.dispose();  // Ensure all screens are cleaned up properly
+//        gsm.dispose();  // Ensure all screens are cleaned up properly
     }
 }

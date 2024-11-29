@@ -1,6 +1,6 @@
 package com.mygdx.angry;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class LevelsScreen extends AbstractGameScreen {
+public class LevelsScreen extends AbstractGameScreen  implements Screen {
     private final Texture backgroundTexture;
     private final SpriteBatch batch;
     private final Skin skin;
@@ -43,21 +43,9 @@ public class LevelsScreen extends AbstractGameScreen {
         Gdx.input.setInputProcessor(stage);
 
         // Create ImageButtons for levels 1 to 5
-        createLevelButton("one.png", 50, 450, "level1");
-        createLevelButton("two.png", 180, 450, "level2");
-        createLevelButton("three.png", 310, 450, "level3");
-        createLevelButton("four.png", 440, 450, "level4");
-        createLevelButton("five.png", 570, 450, "level5");
-        createLevelButton("six.png", 700, 450, "level6");
-        createLevelButton("seven.png", 830, 450, "level7");
-//
-        createLevelButton("eight.png", 50, 270, "level8");
-        createLevelButton("nine.png", 180, 270, "level9");
-        createLevelButton("ten 2.png", 310, 270, "level10");
-        createLevelButton("lock.png", 440, 270, "lock1");
-        createLevelButton("lock.png", 570, 270, "lock2");
-        createLevelButton("lock.png", 700, 270, "lock3");
-        createLevelButton("lock.png", 830, 270, "lock4");
+        createLevelButton("level1.png", 10, 140, "level1", "game");       // Level 1 leads to "game"
+        createLevelButton("level2.png", 300, 140, "level2", "level2");    // Level 2 leads to "level2"
+        createLevelButton("level3.png", 610, 140, "level3", "level3");
 
         // Create an ImageButton for the back button
         Texture backTexture = new Texture("back.png");  // Ensure this image exists in assets
@@ -66,7 +54,7 @@ public class LevelsScreen extends AbstractGameScreen {
         backButton.setSize(200, 100);
 
         // Set initial position (centered horizontally)
-        setBackButtonPosition((viewport.getWorldWidth() - backButton.getWidth()) / 2, 50);
+        setBackButtonPosition((viewport.getWorldWidth() - backButton.getWidth()) / 2, 30);
 
         stage.addActor(backButton);
 
@@ -85,24 +73,26 @@ public class LevelsScreen extends AbstractGameScreen {
     }
 
     // Helper method to create an ImageButton for each level
-    private void createLevelButton(String imagePath, float x, float y, String levelName) {
+    // Helper method to create an ImageButton for each level
+    private void createLevelButton(String imagePath, float x, float y, String levelName, String targetScreen) {
         Texture levelTexture = new Texture(imagePath);
         TextureRegionDrawable levelDrawable = new TextureRegionDrawable(new TextureRegion(levelTexture));
 
         ImageButton levelButton = new ImageButton(levelDrawable);
         levelButton.setPosition(x, y);
 
-        levelButton.setSize(100, 100);
+        levelButton.setSize(400, 400);
         stage.addActor(levelButton);
 
         levelButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float xx, float yy) {
                 System.out.println(levelName + " image clicked!");
-                gsm.setScreen("game");  // Switch to the GameScreen
+                gsm.setScreen(targetScreen);  // Switch to the specified screen
             }
         });
     }
+
 
     @Override
     public void render(float delta) {
@@ -129,7 +119,7 @@ public class LevelsScreen extends AbstractGameScreen {
     @Override
     public void dispose() {
         super.dispose();
-        batch.dispose();
+//        batch.dispose();
         backgroundTexture.dispose();
     }
 }

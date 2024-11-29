@@ -16,21 +16,19 @@ public class LosingScreen implements Screen {
     private final Stage stage;
     private final Texture loseBackgroundTexture;
     private ImageButton restartButton, levelsButton;
-    private Image resultImage;
+    private int currentLevel;
 
     public LosingScreen(GameStateManager gsm) {
         this.gsm = gsm;
         batch = new SpriteBatch();
         stage = new Stage();
+        currentLevel = gsm.getCurrentLevel();
 
         // Load background texture for the losing screen
-        loseBackgroundTexture = new Texture("win_background.png");  // Correct background file name
+        loseBackgroundTexture = new Texture("lose_background.png");  // Correct background file name
         Image backgroundImage = new Image(new TextureRegionDrawable(loseBackgroundTexture));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Add the background image first (so buttons are on top)
         stage.addActor(backgroundImage);
-        setupResultImage();
 
 
         setupUI();
@@ -39,40 +37,29 @@ public class LosingScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void setupResultImage() {
-        // Load the result image (e.g., "you_lost.png")
-        Texture resultTexture = new Texture("losing.png");
-        resultImage = new Image(new TextureRegionDrawable(resultTexture));
 
-        // Set size and position for the result image
-        resultImage.setSize(450, 300);  // Adjust size if needed
-        resultImage.setPosition(80,100 );
-
-        // Add the result image to the stage
-        stage.addActor(resultImage);
-    }
 
     private void setupUI() {
 
         Texture levelsTexture = new Texture("back.png");
         levelsButton = new ImageButton(new TextureRegionDrawable(levelsTexture));
-        levelsButton.setSize(200, 250);
-        levelsButton.setPosition(205,35);
+        levelsButton.setSize(180, 230);
+        levelsButton.setPosition(905,355);
         stage.addActor(levelsButton);
-        
+
 
         // Restart button
         Texture restartTexture = new Texture("restart_button.png");
         restartButton = new ImageButton(new TextureRegionDrawable(restartTexture));
-        restartButton.setSize(110, 120);  // Adjust size if needed
-        restartButton.setPosition(155,95);  // Adjust as necessary
+        restartButton.setSize(90, 100);  // Adjust size if needed
+        restartButton.setPosition(435,420);  // Adjust as necessary
         stage.addActor(restartButton);
 
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 System.out.println("Restart button clicked!");
-                gsm.setScreen("game");  // Restart the game
+                gsm.setScreen("level" + currentLevel);  // Restart the game
             }
         });
 
@@ -80,7 +67,7 @@ public class LosingScreen implements Screen {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 System.out.println("Levels button clicked!");
-                gsm.setScreen("levels");  // Return to levels screen
+                gsm.setScreen("levvels");  // Return to levels screen
             }
         });
     }
